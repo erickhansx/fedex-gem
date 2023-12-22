@@ -13,7 +13,6 @@ module Fedextry
     def self.get(credentials, quote_params)
       url = "https://wsbeta.fedex.com:443/xml"
       body = build_request_body(credentials, quote_params)
-
       response = HTTParty.post(url, body: body)
       parse_response(response)
     end
@@ -24,20 +23,22 @@ module Fedextry
       ERB.new(template).result(binding)
     end
 
-    def self.parse_response(response) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
-      # Check if the response is a Nokogiri document or an HTTP response
+    def self.parse_response(response) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
       xml_data = response.is_a?(Nokogiri::XML::Document) ? response : Nokogiri::XML(response.body)
 
       rates = xml_data.xpath("//*[local-name()='RateReplyDetails']").map do |detail|
         service_type = detail.at_xpath("*[local-name()='ServiceType']").text
 
-        rate_detail = detail.at_xpath("*[local-name()='RatedShipmentDetails']/*[local-name()='ShipmentRateDetail']")
+        rate_detail = detail.xpath("*[local-name()='RatedShipmentDetails']/*[local-name()='ShipmentRateDetail']").find do |rd|
+          rd.at_xpath("*[local-name()='TotalNetCharge']/*[local-name()='Currency']").text == "MXN"
+        end
+
+        next unless rate_detail
 
         price = rate_detail.at_xpath("*[local-name()='TotalNetCharge']/*[local-name()='Amount']").text.to_f
         currency = rate_detail.at_xpath("*[local-name()='TotalNetCharge']/*[local-name()='Currency']").text
 
         service_token = service_type.gsub(/\s+/, "_").upcase
-
         {
           price: price,
           currency: currency,
