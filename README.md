@@ -1,40 +1,72 @@
-# Fedextry
+Fedextry Gem - Usage Guide
+Introduction
+Fedextry is a Ruby gem designed to interact with FedEx's API, allowing users to easily retrieve shipping rate quotes. This guide explains how to use the gem to get rates by running the test_api_call.rb script.
 
-TODO: Delete this and the text below, and describe your gem
+Installation
+Before using the gem, ensure you have Ruby installed on your system. You also need to have the following dependencies:
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/Fedextry`. To experiment with that code, run `bin/console` for an interactive prompt.
+HTTParty
+Nokogiri
+Dotenv
+ERB
+JSON
+You can install these dependencies using Ruby's package manager, gem. For example:
 
-## Installation
+bash
+Copy code
+gem install httparty nokogiri dotenv
+Setting Up
+Clone the Repository: Clone or download the Fedextry repository to your local machine.
 
-TODO: Replace `UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG` with your gem name right after releasing it to RubyGems.org. Please do not do it earlier due to security reasons. Alternatively, replace this section with instructions to install your gem from git if you don't plan to release to RubyGems.org.
+Configure Environment Variables: Set up your FedEx API credentials in a .env file at the root of your project. This file should include your key, password, account number, and meter number.
 
-Install the gem and add to the application's Gemfile by executing:
+Example .env file:
 
-    $ bundle add UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+makefile
+Copy code
+FEDEX_KEY=your_key
+FEDEX_PASSWORD=your_password
+FEDEX_ACCOUNT_NUMBER=your_account_number
+FEDEX_METER_NUMBER=your_meter_number
+Load Dependencies: Ensure that your script loads all required dependencies, as shown in the test_api_call.rb file.
 
-If bundler is not being used to manage dependencies, install the gem by executing:
+Usage
+To get rates from FedEx using the Fedextry gem, follow these steps:
 
-    $ gem install UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+Set Up Credentials and Quote Parameters: In test_api_call.rb, configure your FedEx credentials and quote parameters. The quote parameters should include the origin and destination addresses, as well as parcel dimensions and weight.
 
-## Usage
+Run the Script: Execute the test_api_call.rb script to send a request to FedEx and receive rate quotes. Run the script from the command line:
 
-TODO: Write usage instructions here
+bash
+Copy code
+ruby test_api_call.rb
+View Results: The script will output the rate quotes in JSON format, displaying the price, currency, and service level for each shipping option.
 
-## Development
+Example Response
+The response will look something like this (in JSON format):
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
-
-## Contributing
-
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/Fedextry. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/Fedextry/blob/master/CODE_OF_CONDUCT.md).
-
-## License
-
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
-
-## Code of Conduct
-
-Everyone interacting in the Fedextry project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/Fedextry/blob/master/CODE_OF_CONDUCT.md).
-# fedex-gem
+json
+Copy code
+``[
+  {
+    "price": 218.05,
+    "currency": "MXN",
+    "service_level": {
+      "name": "Standard Overnight",
+      "token": "STANDARD_OVERNIGHT"
+    }
+  },
+  {
+    "price": 139.08,
+    "currency": "MXN",
+    "service_level": {
+      "name": "Fedex Express Saver",
+      "token": "FEDEX_EXPRESS_SAVER"
+    }
+  }
+]``
+Notes
+Ensure your API credentials are correct and have the necessary permissions to access FedEx's rate services.
+The script's output depends on the current data provided by FedEx's API, which may vary based on the request parameters and FedEx's pricing at the time of the request.
+Contributing
+Contributions to the Fedextry gem are welcome. Please follow standard Ruby development practices for contributions.
